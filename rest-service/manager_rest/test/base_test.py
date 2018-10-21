@@ -33,10 +33,10 @@ from manager_rest.test.attribute import attr
 from flask.testing import FlaskClient
 
 from cloudify_rest_client import CloudifyClient
+from cloudify.utils import generate_user_password
 from cloudify_rest_client.exceptions import CloudifyClientError
 
 from manager_rest.rest import rest_utils
-from manager_rest.amqp_manager import AMQPManager
 from manager_rest.cryptography_utils import encrypt
 from manager_rest.test.security_utils import get_admin_user
 from manager_rest import utils, config, constants, archiving
@@ -270,7 +270,7 @@ class BaseServerTestCase(unittest.TestCase):
                 authorization_file_path=temp_auth_file
             )
             default_tenant.rabbitmq_password = encrypt(
-                AMQPManager._generate_user_password()
+                generate_user_password()
             )
         finally:
             os.remove(temp_auth_file)

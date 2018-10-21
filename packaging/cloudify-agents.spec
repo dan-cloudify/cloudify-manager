@@ -14,13 +14,13 @@ Packager:       Cloudify Platform Ltd.
 BuildRequires:  python >= 2.7
 Requires(pre):  shadow-utils
 
-Source0:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/Ubuntu-trusty-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.tar.gz
-Source1:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/Ubuntu-xenial-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.tar.gz
-Source2:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/Ubuntu-bionic-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.tar.gz
-Source3:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/centos-Core-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.tar.gz
-Source4:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/centos-Final-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.tar.gz
-Source5:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/redhat-Maipo-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.tar.gz
-Source6:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/redhat-Santiago-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.tar.gz
+Source0:        https://cloudify-release-eu.s3.amazonaws.com/cloudify/4.5.5/.dev1-build/CY-709-rabbitmq-user-per-agent/Ubuntu-trusty-agent_4.5.5-.dev1.tar.gz
+Source1:        https://cloudify-release-eu.s3.amazonaws.com/cloudify/4.5.5/.dev1-build/CY-709-rabbitmq-user-per-agent/Ubuntu-xenial-agent_4.5.5-.dev1.tar.gz
+Source2:        https://cloudify-release-eu.s3.amazonaws.com/cloudify/4.5.5/.dev1-build/CY-709-rabbitmq-user-per-agent/Ubuntu-bionic-agent_4.5.5-.dev1.tar.gz
+Source3:        https://cloudify-release-eu.s3.amazonaws.com/cloudify/4.5.5/.dev1-build/CY-709-rabbitmq-user-per-agent/centos-Core-agent_4.5.5-.dev1.tar.gz
+Source4:        https://cloudify-release-eu.s3.amazonaws.com/cloudify/4.5.5/.dev1-build/CY-709-rabbitmq-user-per-agent/centos-Final-agent_4.5.5-.dev1.tar.gz
+Source5:        https://cloudify-release-eu.s3.amazonaws.com/cloudify/4.5.5/.dev1-build/CY-709-rabbitmq-user-per-agent/redhat-Maipo-agent_4.5.5-.dev1.tar.gz.md5
+Source6:        https://cloudify-release-eu.s3.amazonaws.com/cloudify/4.5.5/.dev1-build/CY-709-rabbitmq-user-per-agent/redhat-Santiago-agent_4.5.5-.dev1.tar.gz
 Source7:        http://cloudify-release-eu.s3.amazonaws.com/cloudify/%{CLOUDIFY_VERSION}/%{CLOUDIFY_PACKAGE_RELEASE}-release/cloudify-windows-agent_%{CLOUDIFY_VERSION}-%{CLOUDIFY_PACKAGE_RELEASE}.exe
 
 %description

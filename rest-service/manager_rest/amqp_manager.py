@@ -13,13 +13,12 @@
 #    * See the License for the specific language governing permissions and
 #    * limitations under the License.
 
-import random
-import string
-import requests
-from urllib import quote
 from requests.exceptions import HTTPError
 
 from functools import wraps
+
+from cloudify.utils import generate_user_password
+from cloudify.rabbitmq_client import RabbitMQClient, USERNAME_PATTERN
 
 from manager_rest.storage.models import Tenant
 from manager_rest.storage import get_storage_manager
@@ -44,68 +43,9 @@ def ignore_not_found(func):
 RABBITMQ_MANAGEMENT_PORT = 15671
 
 
-class RabbitMQClient(object):
-    def __init__(self, host, username, password, port=RABBITMQ_MANAGEMENT_PORT,
-                 scheme='https', **request_kwargs):
-        self._host = host
-        self._port = port
-        self._scheme = scheme
-        request_kwargs.setdefault('auth', (username, password))
-        self._request_kwargs = request_kwargs
-
-    @property
-    def base_url(self):
-        return '{0}://{1}:{2}'.format(self._scheme, self._host, self._port)
-
-    def _do_request(self, request_method, url, **kwargs):
-        request_kwargs = self._request_kwargs.copy()
-        request_kwargs.update(kwargs)
-        request_kwargs.setdefault('headers', {})\
-            .setdefault('Content-Type', 'application/json',)
-
-        url = '{0}/api/{1}'.format(self.base_url, url)
-        response = request_method(url, **request_kwargs)
-        response.raise_for_status()
-        return response
-
-    def get_vhost_names(self):
-        vhosts = self._do_request(requests.get, 'vhosts').json()
-        return [vhost['name'] for vhost in vhosts]
-
-    def create_vhost(self, vhost):
-        vhost = quote(vhost, '')
-        self._do_request(requests.put, 'vhosts/{0}'.format(vhost))
-
-    def delete_vhost(self, vhost):
-        vhost = quote(vhost, '')
-        self._do_request(requests.delete, 'vhosts/{0}'.format(vhost))
-
-    def get_users(self):
-        return self._do_request(requests.get, 'users').json()
-
-    def create_user(self, username, password, tags=''):
-        self._do_request(requests.put, 'users/{0}'.format(username),
-                         json={'password': password, 'tags': tags})
-
-    def delete_user(self, username):
-        self._do_request(requests.delete, 'users/{0}'.format(username))
-
-    def set_vhost_permissions(self, vhost, username, configure='', write='',
-                              read=''):
-        vhost = quote(vhost, '')
-        self._do_request(requests.put,
-                         'permissions/{0}/{1}'.format(vhost, username),
-                         json={
-                             'configure': configure,
-                             'write': write,
-                             'read': read
-                         })
-
-
 class AMQPManager(object):
 
     VHOST_NAME_PATTERN = 'rabbitmq_vhost_{0}'
-    USERNAME_PATTERN = 'rabbitmq_user_{0}'
 
     def __init__(self, host, username, password, **request_kwargs):
         self._client = RabbitMQClient(host, username, password,
@@ -122,10 +62,10 @@ class AMQPManager(object):
         vhost = tenant.rabbitmq_vhost or \
             self.VHOST_NAME_PATTERN.format(tenant.name)
         username = tenant.rabbitmq_username or \
-            self.USERNAME_PATTERN.format(tenant.name)
+            USERNAME_PATTERN.format(tenant.name)
 
         # The password is being stored encrypted in the DB
-        new_password = AMQPManager._generate_user_password()
+        new_password = generate_user_password()
         password = decrypt(tenant.rabbitmq_password) \
             if tenant.rabbitmq_password else new_password
         encrypted_password = tenant.rabbitmq_password or encrypt(new_password)
@@ -190,27 +130,11 @@ class AMQPManager(object):
         current_usernames = set(
             user['name']
             for user in self._client.get_users()
-            if user['name'].startswith(self.USERNAME_PATTERN[:-3])
+            if user['name'].startswith(USERNAME_PATTERN[:-3])
         )
         extra_usernames = current_usernames - expected_usernames
         for username in extra_usernames:
             self._client.delete_user(username)
-
-    @staticmethod
-    def _generate_user_password(password_length=32):
-        """Generate random string to use as user password."""
-        system_random = random.SystemRandom()
-        allowed_characters = (
-            string.letters +
-            string.digits +
-            '-_'
-        )
-
-        password = ''.join(
-            system_random.choice(allowed_characters)
-            for _ in xrange(password_length)
-        )
-        return password
 
     @ignore_not_found
     def _delete_vhost(self, vhost):
@@ -224,7 +148,7 @@ class AMQPManager(object):
         """ Delete the vhost and user associated with a tenant name """
 
         vhost = self.VHOST_NAME_PATTERN.format(tenant_name)
-        username = self.USERNAME_PATTERN.format(tenant_name)
+        username = USERNAME_PATTERN.format(tenant_name)
 
         self._delete_vhost(vhost)
         self._delete_user(username)
