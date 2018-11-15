@@ -1370,7 +1370,7 @@ class ResourceManager(object):
             name=name,
             _tasks_graph_fk=graph._storage_id,
             created_at=utils.get_formatted_timestamp(),
-            state='started',
+            state='pending',
             dependencies=dependencies,
             parameters=parameters,
             type=type,
