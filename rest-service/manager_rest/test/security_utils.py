@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask_security.utils import hash_password
-
 from manager_rest.storage.models import Tenant, UserTenantAssoc
 from manager_rest.storage import user_datastore
 from manager_rest.constants import (
@@ -41,23 +39,31 @@ def get_test_users():
         {
             'username': 'alice',
             'password': 'alice_password',
-            'role': ADMIN_ROLE
+            'role': ADMIN_ROLE,
+            'hashed_password': '$pbkdf2-sha256$29000$Qcj5f2/tPacUolTKmROCcA$'
+                               'ck6FKEImJxQ4AmNGLTO2MgFg94GMtgZ5Jv414JS9J6g'
         },
         {
             'username': 'bob',
             'password': 'bob_password',
-            'role': USER_ROLE
+            'role': USER_ROLE,
+            'hashed_password': '$pbkdf2-sha256$29000$RgghhFBqLSWktDZGSCkFIA$'
+                               'vfa.W/PGDgRfIkgyAgoAGyo0OsdrpkIX3AJSG7wuPhQ'
         },
         {
             'username': 'clair',
             'password': 'clair_password',
             'role': USER_ROLE,
-            'active': False
+            'active': False,
+            'hashed_password': '$pbkdf2-sha256$29000$17oXQuhdi3FOidFaq5USgg$'
+                               'd6yDLHVka5CdOwYlESgAP4lX/pI8Dz0lrsPCr71AnF8'
         },
         {
             'username': 'dave',
             'password': 'dave_password',
-            'role': USER_ROLE
+            'role': USER_ROLE,
+            'hashed_password': '$pbkdf2-sha256$29000$.z.nVMqZs3aOMWbMmdNaSw$'
+                               'uXXw7/Ko6u1xLnosdfPbO2gN/vuzkEVhz1mov9Gov6w'
         }
     ]
     return test_users
@@ -69,7 +75,7 @@ def add_users_to_db(user_list):
         role = user_datastore.find_role(user['role'])
         user_obj = user_datastore.create_user(
             username=user['username'],
-            password=hash_password(user['password']),
+            password=user['hashed_password'],
             roles=[role]
         )
 
